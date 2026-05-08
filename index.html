@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Envi Lee AI Creator Suite™</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#000;--bg2:#080808;--bg3:#0f0f12;--bg4:#141418;
+  --s1:#18181e;--s2:#202028;--s3:#282832;
+  --w:#f4f4ff;--w2:#ccccee;--w3:#9898cc;
+  --mu:#44445a;--mu2:#66667a;--mu3:#88889a;
+  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.12);
+  --pod:#00f5ff;--pod2:rgba(0,245,255,0.12);--pod3:rgba(0,245,255,0.06);--podb:rgba(0,245,255,0.25);
+  --cf:#00c853;--cf2:rgba(0,200,83,0.12);--cf3:rgba(0,200,83,0.06);--cfb:rgba(0,200,83,0.25);
+  --stu:rgba(255,255,255,0.85);--stu2:rgba(255,255,255,0.08);--stub:rgba(255,255,255,0.2);
+  --gold:#e8c76a;--gold2:rgba(232,199,106,0.12);--gold3:rgba(232,199,106,0.06);--goldb:rgba(232,199,106,0.25);
+  --r:8px;--r2:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--w);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.008) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.008) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:500;background:rgba(0,0,0,0.97);border-bottom:0.5px solid var(--b2);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;backdrop-filter:blur(20px)}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-gems{display:flex;gap:3px}
+.gem{width:8px;height:8px;transform:rotate(45deg)}
+.gem.pod{background:var(--pod)}
+.gem.stu{background:#fff;opacity:.8}
+.gem.cf{background:var(--cf)}
+.logo-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--w)}
+.logo-name em{font-style:normal;color:var(--gold)}
+.logo-sub{font-size:9px;color:var(--mu2);letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:1px}
+.app-tabs{display:flex;gap:3px}
+.tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--mu2);font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
+.tab:hover{background:var(--s1);color:var(--w)}
+.tab.pod.on{background:var(--pod2);color:var(--pod);border:0.5px solid var(--podb)}
+.tab.stu.on{background:var(--stu2);color:var(--w);border:0.5px solid var(--stub)}
+.tab.cf.on{background:var(--cf2);color:var(--cf);border:0.5px solid var(--cfb)}
+.tab.gold.on{background:var(--gold2);color:var(--gold);border:0.5px solid var(--goldb)}
+.plan-badge{background:var(--gold2);border:0.5px solid var(--goldb);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--gold);font-family:'DM Mono',monospace}
+
+/* LAYOUT */
+.shell{display:flex;min-height:calc(100vh - 56px);position:relative;z-index:1}
+.sidebar{width:216px;background:var(--bg2);border-right:0.5px solid var(--b);padding:14px 10px;flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.slabel{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:1.2px;padding:10px 10px 5px;font-family:'DM Mono',monospace}
+.si{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--mu2);transition:all .2s;border:0.5px solid transparent;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.si:hover{background:var(--s1);color:var(--w)}
+.si.pod.on{background:var(--pod2);color:var(--pod);border-color:var(--podb)}
+.si.cf.on{background:var(--cf2);color:var(--cf);border-color:var(--cfb)}
+.si.stu.on{background:var(--stu2);color:var(--w);border-color:var(--stub)}
+.si.gold.on{background:var(--gold2);color:var(--gold);border-color:var(--goldb)}
+.sdivider{height:0.5px;background:var(--b);margin:6px 0}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:26px}
+.pg{display:none;animation:pgIn .28s ease}
+.pg.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.pg-title{font-family:'Syne',sans-serif;font-size:23px;font-weight:800;color:var(--w);margin-bottom:4px;letter-spacing:-.3px}
+.pg-sub{font-size:12px;color:var(--mu2);margin-bottom:22px;line-height:1.6}
+
+/* PANELS */
+.panel{background:var(--s1);border:0.5px solid var(--b);border-radius:var(--r2);padding:16px}
+.panel.hi{border-color:var(--b2)}
+.panel.pod{border-color:rgba(0,245,255,0.2)}
+.panel.cf{border-color:rgba(0,200,83,0.2)}
+.panel.stu{border-color:rgba(255,255,255,0.1)}
+.panel.gold{border-color:var(--goldb)}
+.ptitle{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:9px;border-bottom:0.5px solid var(--b)}
+.ptitle.pod{color:var(--pod)}
+.ptitle.cf{color:var(--cf)}
+.ptitle.stu{color:var(--mu3)}
+.ptitle.gold{color:var(--gold)}
+.ptitle.def{color:var(--mu3)}
+
+/* FORM */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.fl{font-size:9px;font-weight:600;color:var(--mu3);text-transform:uppercase;letter-spacing:.7px;font-family:'DM Mono',monospace}
+.inp{background:var(--bg3);border:0.5px solid var(--b);border-radius:7px;padding:9px 12px;font-size:12px;color:var(--w);font-family:'DM Sans',sans-serif;width:100%;outline:none;transition:border .2s}
+.inp:focus{border-color:var(--b2)}
+.inp::placeholder{color:var(--mu)}
+textarea.inp{resize:vertical;min-height:78px;line-height:1.6}
+.sel{background:var(--bg3);border:0.5px solid var(--b);border-radius:7px;padding:8px 10px;font-size:12px;color:var(--w);font-family:'DM Sans',sans-serif;width:100%;outline:none}
+
+/* BUTTONS */
+.btn{padding:8px 14px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;border:0.5px solid var(--b2);background:var(--s2);color:var(--w2);transition:all .2s;font-family:'DM Sans',sans-serif}
+.btn:hover{background:var(--s3)}
+.btn.pod{background:var(--pod);color:#000;border-color:var(--pod);font-weight:700;width:100%}
+.btn.pod:hover{background:#33f7ff}
+.btn.cf{background:var(--cf);color:#000;border-color:var(--cf);font-weight:700;width:100%}
+.btn.cf:hover{background:#33e07a}
+.btn.stu{background:var(--w);color:#000;border-color:var(--w);font-weight:700;width:100%}
+.btn.gold{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700;width:100%}
+.btn.gold:hover{background:#f0d48a}
+.btn.sm{padding:6px 12px;font-size:11px;width:auto}
+.btn.w100{width:100%}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fc{display:flex;flex-direction:column;gap:9px}
+.mb12{margin-bottom:12px}
+.mb16{margin-bottom:16px}
+.mb22{margin-bottom:22px}
+.mt8{margin-top:8px}
+.mt12{margin-top:12px}
+.w100{width:100%}
+
+/* AI OUTPUT */
+.ai-out{background:var(--bg4);border:0.5px solid var(--b2);border-radius:var(--r2);padding:14px;display:none;margin-top:10px;animation:pgIn .3s ease}
+.ai-out.show{display:block}
+.ai-lbl{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-lbl::before{content:'';width:6px;height:6px;border-radius:50%;animation:aip 1.8s ease infinite;flex-shrink:0}
+.ai-lbl.pod{color:var(--pod)}.ai-lbl.pod::before{background:var(--pod)}
+.ai-lbl.cf{color:var(--cf)}.ai-lbl.cf::before{background:var(--cf)}
+.ai-lbl.stu{color:var(--mu3)}.ai-lbl.stu::before{background:var(--w3)}
+.ai-lbl.gold{color:var(--gold)}.ai-lbl.gold::before{background:var(--gold)}
+@keyframes aip{0%,100%{opacity:1}50%{opacity:.2}}
+.ai-text{font-size:12px;color:var(--w2);line-height:1.85;white-space:pre-wrap}
+.lbar{height:2px;overflow:hidden;margin:8px 0;display:none;border-radius:1px;background:var(--b)}
+.lbar.go{display:block}
+.lbar-fill{height:100%;border-radius:1px;background-size:200% 100%;animation:lm 1.6s linear infinite}
+.lbar-fill.pod{background:linear-gradient(90deg,var(--pod),#0ff4c6,var(--pod))}
+.lbar-fill.cf{background:linear-gradient(90deg,var(--cf),#69f0ae,var(--cf))}
+.lbar-fill.stu{background:linear-gradient(90deg,var(--w3),var(--w),var(--w3))}
+.lbar-fill.gold{background:linear-gradient(90deg,var(--gold),#fffde7,var(--gold))}
+@keyframes lm{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* QUICK START BTNS */
+.qs{display:block;width:100%;margin-bottom:7px;padding:8px 11px;background:var(--bg3);border:0.5px solid var(--b);border-radius:7px;font-size:12px;color:var(--mu3);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .2s}
+.qs:hover{color:var(--w);border-color:var(--b2)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--s1);border-radius:var(--r);padding:14px;border:0.5px solid var(--b);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat.pod::before{background:var(--pod)}
+.stat.cf::before{background:var(--cf)}
+.stat.gold::before{background:var(--gold)}
+.stat.stu::before{background:rgba(255,255,255,0.4)}
+.stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--w)}
+.stat-l{font-size:10px;color:var(--mu2);margin-top:2px;font-family:'DM Mono',monospace}
+.stat-g{font-size:10px;margin-top:2px;font-family:'DM Mono',monospace;color:var(--mu3)}
+
+/* HOME CARDS */
+.app-card{border-radius:var(--r2);padding:18px;border:0.5px solid;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.app-card.pod{background:var(--pod3);border-color:rgba(0,245,255,0.2)}
+.app-card.pod::before{background:var(--pod)}
+.app-card.pod:hover{background:var(--pod2);border-color:rgba(0,245,255,0.35)}
+.app-card.stu{background:var(--stu2);border-color:rgba(255,255,255,0.08)}
+.app-card.stu::before{background:rgba(255,255,255,0.7)}
+.app-card.stu:hover{border-color:rgba(255,255,255,0.18)}
+.app-card.cf{background:var(--cf3);border-color:rgba(0,200,83,0.2)}
+.app-card.cf::before{background:var(--cf)}
+.app-card.cf:hover{background:var(--cf2);border-color:rgba(0,200,83,0.35)}
+.app-card.gold{background:var(--gold3);border-color:var(--goldb)}
+.app-card.gold::before{background:var(--gold)}
+.app-card.gold:hover{background:var(--gold2)}
+.ac-icon{font-family:'DM Mono',monospace;font-size:22px;margin-bottom:9px}
+.ac-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--w);margin-bottom:3px}
+.ac-sub{font-size:11px;color:var(--mu3);line-height:1.5;margin-bottom:10px}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;margin-bottom:10px;padding-right:2px}
+.chat-wrap::-webkit-scrollbar{width:2px}
+.msg{max-width:86%;padding:10px 12px;border-radius:12px;font-size:12px;line-height:1.6}
+.msg.user{background:var(--cf2);border:0.5px solid var(--cfb);color:var(--w2);align-self:flex-end;border-radius:12px 12px 2px 12px;margin-left:auto}
+.msg.bot{background:var(--s2);border:0.5px solid var(--b);color:var(--w2);align-self:flex-start;border-radius:12px 12px 12px 2px}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row .inp{flex:1}
+
+/* PILL TAGS */
+.pill{font-size:9px;padding:2px 7px;border-radius:8px;font-weight:600;font-family:'DM Mono',monospace}
+.pill.pod{background:var(--pod2);color:var(--pod)}
+.pill.cf{background:var(--cf2);color:var(--cf)}
+.pill.gold{background:var(--gold2);color:var(--gold)}
+.pill.mu{background:var(--s2);color:var(--mu3)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-gems">
+      <div class="gem pod"></div>
+      <div class="gem stu"></div>
+      <div class="gem cf"></div>
+    </div>
+    <div>
+      <div class="logo-name">Envi Lee <em>AI Creator Suite™</em></div>
+      <div class="logo-sub">All 3 apps · One place</div>
+    </div>
+  </div>
+  <div class="app-tabs">
+    <button class="tab gold on" onclick="switchApp('home',this)">✦ Home</button>
+    <button class="tab pod" onclick="switchApp('pod',this)">◈ POD Studio</button>
+    <button class="tab stu" onclick="switchApp('stu',this)">◉ AI Studios</button>
+    <button class="tab cf" onclick="switchApp('cf',this)">⊳ CineFlow</button>
+    <button class="tab gold" onclick="switchApp('deals',this)">◎ Brand Deals</button>
+  </div>
+  <div class="plan-badge">Boss Plan ✦</div>
+</header>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <!-- filled dynamically -->
+</aside>
+
+<main class="main">
+
+<!-- ═══════════════════════════════════════════════
+     HOME DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="pg on" id="pg-home">
+  <div class="pg-title">Welcome back, <span style="color:var(--gold)">Envi Lee</span> ✦</div>
+  <div class="pg-sub">Your complete AI creator empire — mockups, movies, content, and brand deals. All in one place.</div>
+
+  <div class="stats">
+    <div class="stat pod"><div class="stat-n">84</div><div class="stat-l">Mockups created</div></div>
+    <div class="stat stu"><div class="stat-n">42</div><div class="stat-l">Scripts written</div></div>
+    <div class="stat cf"><div class="stat-n">247</div><div class="stat-l">Prompts generated</div></div>
+    <div class="stat gold"><div class="stat-n">7</div><div class="stat-l">Brand deals active</div></div>
+  </div>
+
+  <div class="g4 mb22">
+    <div class="app-card pod" onclick="switchApp('pod',null)">
+      <div class="ac-icon" style="color:var(--pod)">◈</div>
+      <div class="ac-name" style="color:var(--pod)">POD Pro Studio™</div>
+      <div class="ac-sub">Mockups, listings, descriptions, AI image prompts</div>
+      <button class="btn pod" style="font-size:11px;padding:8px">Open ↗</button>
+    </div>
+    <div class="app-card stu" onclick="switchApp('stu',null)">
+      <div class="ac-icon" style="color:var(--mu3)">◉</div>
+      <div class="ac-name">AI Studios™</div>
+      <div class="ac-sub">Scripts, characters, reality shows, concerts, podcasts</div>
+      <button class="btn stu" style="font-size:11px;padding:8px">Open ↗</button>
+    </div>
+    <div class="app-card cf" onclick="switchApp('cf',null)">
+      <div class="ac-icon" style="color:var(--cf)">⊳</div>
+      <div class="ac-name" style="color:var(--cf)">CineFlow AI™</div>
+      <div class="ac-sub">Cinematic prompts, content calendar, hooks, UGC ads</div>
+      <button class="btn cf" style="font-size:11px;padding:8px">Open ↗</button>
+    </div>
+    <div class="app-card gold" onclick="switchApp('deals',null)">
+      <div class="ac-icon" style="color:var(--gold)">◎</div>
+      <div class="ac-name" style="color:var(--gold)">Brand Deals</div>
+      <div class="ac-sub">Pitch emails, rate cards, contracts, deal tracker</div>
+      <button class="btn gold" style="font-size:11px;padding:8px">Open ↗</button>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="panel gold">
+      <div class="ptitle gold">Today's priorities</div>
+      <div class="fc">
+        <div style="padding:9px 12px;background:var(--pod3);border:0.5px solid var(--podb);border-radius:var(--r);font-size:12px;color:var(--pod);cursor:pointer" onclick="switchApp('pod',null)">◈ Generate swim collection mockups ↗</div>
+        <div style="padding:9px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);cursor:pointer" onclick="switchApp('stu',null)">◉ Write Baddie House Episode 5</div>
+        <div style="padding:9px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);cursor:pointer" onclick="switchApp('cf',null)">⊳ Generate today's TikTok content</div>
+        <div style="padding:9px 12px;background:var(--gold2);border:0.5px solid var(--goldb);border-radius:var(--r);font-size:12px;color:var(--gold);cursor:pointer" onclick="switchApp('deals',null)">◎ Follow up on Shein brand deal</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle def">Video creation workflow</div>
+      <div style="font-size:12px;color:var(--mu3);line-height:2;font-family:'DM Mono',monospace">
+        Step 1: Generate prompt here<br>
+        <span style="color:var(--cf)">↓ CineFlow or AI Studios</span><br>
+        Step 2: Paste into video tool<br>
+        <span style="color:var(--pod)">↓ Kling AI · Runway · Pika</span><br>
+        Step 3: Download your video<br>
+        <span style="color:var(--gold)">↓ Post on TikTok / Instagram</span>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+        <a href="https://kling.ai" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:block">Kling AI — free tier ↗</a>
+        <a href="https://runwayml.com" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:block">Runway Gen-3 ↗</a>
+        <a href="https://pika.art" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:block">Pika — free tier ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     POD PRO STUDIO
+═══════════════════════════════════════════════ -->
+<div class="pg" id="pg-pod-mockup">
+  <div class="pg-title" style="color:var(--pod)">Mockup <span style="color:var(--w)">Generator</span></div>
+  <div class="pg-sub">Describe your product — AI writes a complete prompt for Midjourney, DALL-E, and Kling AI.</div>
+  <div class="g2">
+    <div class="panel pod">
+      <div class="ptitle pod">Product details</div>
+      <div class="field"><div class="fl">Product type</div>
+        <select class="sel" id="m-product">
+          <option>T-Shirt</option><option>Hoodie</option><option>Swimwear</option><option>Leggings</option><option>Hat</option><option>Bag</option><option>Tumbler</option><option>Shoes</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Design description</div><textarea class="inp" id="m-design" placeholder="Colors, graphics, patterns, text, vibe..."></textarea></div>
+      <div class="field"><div class="fl">Model / setting</div>
+        <select class="sel" id="m-setting">
+          <option>Black woman — natural hair, confident, luxury lifestyle</option>
+          <option>Black woman — beachside, swimwear shoot, golden hour</option>
+          <option>Black woman — urban street style, NYC vibes</option>
+          <option>Flat lay — clean marble surface, minimal props</option>
+          <option>Outdoor editorial — natural light, aspirational</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Visual style</div>
+        <select class="sel" id="m-style">
+          <option>Editorial fashion photography</option><option>Luxury lifestyle campaign</option><option>Streetwear urban aesthetic</option><option>Minimal studio flat lay</option><option>Cinematic film still</option>
+        </select>
+      </div>
+      <button class="btn pod mt8" onclick="genMockup()">Generate mockup prompts ↗</button>
+      <div class="lbar mt8" id="m-lbar"><div class="lbar-fill pod"></div></div>
+      <div class="ai-out" id="m-out"><div class="ai-lbl pod">Mockup Prompt Package</div><div class="ai-text" id="m-txt"></div><button class="btn sm mt8" onclick="cp('m-txt')">Copy ↗</button></div>
+    </div>
+    <div>
+      <div class="panel pod mb12">
+        <div class="ptitle pod">Quick-starts</div>
+        <button class="qs" onclick="quickMockup('Swimwear','Tropical floral, black and gold, minimal','Black woman, poolside luxury resort, Maldives vibes','Luxury lifestyle campaign')">Luxury swim set ↗</button>
+        <button class="qs" onclick="quickMockup('Hoodie','Bold city skyline, oversized, vintage worn','Black woman, NYC street, urban autumn','Streetwear urban aesthetic')">Streetwear hoodie ↗</button>
+        <button class="qs" onclick="quickMockup('T-Shirt','Minimal embroidered logo, clean white','Marble flat lay, minimal gold props','Minimal studio flat lay')">Clean studio tee ↗</button>
+      </div>
+      <div class="panel pod">
+        <div class="ptitle pod">Works with</div>
+        <div class="fc">
+          <div style="padding:7px 10px;background:var(--bg3);border-radius:var(--r);font-size:12px;color:var(--mu3);font-family:'DM Mono',monospace">◈ Midjourney v6</div>
+          <div style="padding:7px 10px;background:var(--bg3);border-radius:var(--r);font-size:12px;color:var(--mu3);font-family:'DM Mono',monospace">◈ DALL-E 3</div>
+          <div style="padding:7px 10px;background:var(--bg3);border-radius:var(--r);font-size:12px;color:var(--mu3);font-family:'DM Mono',monospace">◈ Kling AI (video)</div>
+          <div style="padding:7px 10px;background:var(--bg3);border-radius:var(--r);font-size:12px;color:var(--mu3);font-family:'DM Mono',monospace">◈ Runway Gen-3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-pod-listing">
+  <div class="pg-title" style="color:var(--pod)">Product <span style="color:var(--w)">Listing Writer</span></div>
+  <div class="pg-sub">AI writes your full title, description, bullet points, SEO tags, and TikTok caption in one click.</div>
+  <div class="g2">
+    <div class="panel pod">
+      <div class="ptitle pod">Product details</div>
+      <div class="field"><div class="fl">Product name</div><input class="inp" id="l-name" placeholder="e.g. Luxe Floral Crop Tee"/></div>
+      <div class="field"><div class="fl">Details</div><textarea class="inp" id="l-details" placeholder="Material, colors, style, what makes it special..."></textarea></div>
+      <div class="field"><div class="fl">Platform</div>
+        <select class="sel" id="l-platform"><option>Etsy</option><option>Shopify</option><option>TikTok Shop</option><option>Amazon</option></select>
+      </div>
+      <div class="field"><div class="fl">Target audience</div><input class="inp" id="l-audience" value="Women aged 22–40 who love fashion and luxury aesthetics"/></div>
+      <button class="btn pod mt8" onclick="genListing()">Write full listing ↗</button>
+      <div class="lbar mt8" id="l-lbar"><div class="lbar-fill pod"></div></div>
+      <div class="ai-out" id="l-out"><div class="ai-lbl pod">Product Listing</div><div class="ai-text" id="l-txt"></div><button class="btn sm mt8" onclick="cp('l-txt')">Copy ↗</button></div>
+    </div>
+    <div class="panel pod">
+      <div class="ptitle pod">Description Writer</div>
+      <div class="field"><div class="fl">Product</div><input class="inp" id="d-product" placeholder="e.g. Luxe Floral Crop Tee — black & gold"/></div>
+      <div class="field"><div class="fl">Niche</div><input class="inp" id="d-niche" value="luxury fashion"/></div>
+      <div class="field"><div class="fl">Tone</div><input class="inp" id="d-tone" value="elevated, aspirational, confident"/></div>
+      <div class="field"><div class="fl">Audience</div><input class="inp" id="d-audience" value="Black women aged 22–40 who love fashion"/></div>
+      <button class="btn pod mt8" onclick="genDescription()">Write 3 descriptions + tagline ↗</button>
+      <div class="lbar mt8" id="d-lbar"><div class="lbar-fill pod"></div></div>
+      <div class="ai-out" id="d-out"><div class="ai-lbl pod">Descriptions + Tagline</div><div class="ai-text" id="d-txt"></div><button class="btn sm mt8" onclick="cp('d-txt')">Copy ↗</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     AI STUDIOS
+═══════════════════════════════════════════════ -->
+<div class="pg" id="pg-stu-script">
+  <div class="pg-title">Script <span style="color:var(--mu3)">Writer</span></div>
+  <div class="pg-sub">Write reality TV episodes, movie scripts, documentaries, music video concepts, and talk show scripts.</div>
+  <div class="g2">
+    <div class="panel stu">
+      <div class="ptitle stu">Script details</div>
+      <div class="field"><div class="fl">Script type</div>
+        <select class="sel" id="ss-type">
+          <option>Reality TV episode</option><option>Movie script (short film)</option><option>Documentary</option><option>Music video concept</option><option>Talk show episode</option><option>Podcast episode</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Title / show name</div><input class="inp" id="ss-title" placeholder="e.g. Baddie House, The Luxe Life, The Creator Files"/></div>
+      <div class="field"><div class="fl">Characters / cast</div><input class="inp" id="ss-cast" placeholder="e.g. Luxe Envi, Marcus Reed, Nova Star"/></div>
+      <div class="field"><div class="fl">Story / arc</div><textarea class="inp" id="ss-story" placeholder="What happens? Who is involved? What is the drama or message?"></textarea></div>
+      <div class="field"><div class="fl">Tone</div>
+        <select class="sel" id="ss-tone">
+          <option>Dramatic and tense</option><option>Glamorous and aspirational</option><option>Funny and chaotic</option><option>Emotional and moving</option><option>Mysterious and cinematic</option>
+        </select>
+      </div>
+      <button class="btn stu mt8" onclick="genScript()">Generate script ↗</button>
+      <div class="lbar mt8" id="ss-lbar"><div class="lbar-fill stu"></div></div>
+      <div class="ai-out" id="ss-out"><div class="ai-lbl stu">Script</div><div class="ai-text" id="ss-txt"></div><button class="btn sm mt8" onclick="cp('ss-txt')">Copy ↗</button></div>
+    </div>
+    <div>
+      <div class="panel stu mb12">
+        <div class="ptitle stu">Quick-starts</div>
+        <button class="qs" onclick="quickScript('Reality TV episode','Baddie House','Luxe Envi, Marcus Reed, Jade','Luxe and Marcus have a public fallout at a rooftop party — receipts get pulled, chaos ensues','Dramatic and tense')">Baddie House drama ↗</button>
+        <button class="qs" onclick="quickScript('Music video concept','Nova Star — Flawless','Nova Star','A Black female AI pop star performs in a futuristic cityscape, cuts between concert stage and fashion moments','Glamorous and aspirational')">Music video concept ↗</button>
+        <button class="qs" onclick="quickScript('Documentary','The Come Up','Envi Lee','A documentary following a young Black woman building her POD empire and AI creator brand from zero','Emotional and moving')">Creator documentary ↗</button>
+        <button class="qs" onclick="quickScript('Podcast episode','The Creator Files','Luxe Envi','How I made my first $10k with POD and AI tools — breaking down exactly what worked and what didn\'t','Glamorous and aspirational')">Podcast episode ↗</button>
+      </div>
+      <div class="panel stu">
+        <div class="ptitle stu">Video prompt export</div>
+        <div style="font-size:12px;color:var(--mu3);line-height:1.8;margin-bottom:10px">After generating your script, use CineFlow to turn any scene into a cinematic video prompt — then paste into Kling AI or Runway to generate the actual video.</div>
+        <button class="btn w100" style="background:var(--cf2);border-color:var(--cfb);color:var(--cf)" onclick="switchApp('cf',null)">Open CineFlow → Make video prompts ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-stu-character">
+  <div class="pg-title">Character <span style="color:var(--mu3)">Builder</span></div>
+  <div class="pg-sub">Build reusable AI characters and influencer twins. Every character gets a full profile, appearance prompt, and video seed.</div>
+  <div class="panel stu mb16">
+    <div class="ptitle stu">Character profile</div>
+    <div class="g2">
+      <div class="field"><div class="fl">Character name</div><input class="inp" id="sc-name" placeholder="e.g. Luxe Envi, Nova Star, Marcus Reed"/></div>
+      <div class="field"><div class="fl">Age & vibe</div><input class="inp" id="sc-age" placeholder="e.g. 28, luxury lifestyle creator, powerful energy"/></div>
+      <div class="field"><div class="fl">Appearance</div><input class="inp" id="sc-look" placeholder="e.g. Black woman, deep brown skin, natural locs, 5'7"/></div>
+      <div class="field"><div class="fl">Style & fashion</div><input class="inp" id="sc-style" placeholder="e.g. luxury streetwear, designer pieces, bold accessories"/></div>
+      <div class="field"><div class="fl">Personality</div><input class="inp" id="sc-personality" placeholder="e.g. bold, ambitious, charismatic, commanding, witty"/></div>
+      <div class="field"><div class="fl">Backstory</div><input class="inp" id="sc-backstory" placeholder="e.g. Built a POD empire from nothing, now an AI influencer"/></div>
+    </div>
+    <button class="btn stu" onclick="genCharacter()">Build full character profile ↗</button>
+    <div class="lbar mt8" id="sc-lbar"><div class="lbar-fill stu"></div></div>
+    <div class="ai-out" id="sc-out"><div class="ai-lbl stu">Character Profile</div><div class="ai-text" id="sc-txt"></div><button class="btn sm mt8" onclick="cp('sc-txt')">Copy ↗</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CINEFLOW AI
+═══════════════════════════════════════════════ -->
+<div class="pg" id="pg-cf-prompt">
+  <div class="pg-title" style="color:var(--cf)">Cinematic Prompt <span style="color:var(--w)">Builder</span></div>
+  <div class="pg-sub">Generate cinematic video prompts ready to paste into Kling AI, Runway, or Pika and turn into real videos.</div>
+  <div class="g2">
+    <div class="panel cf">
+      <div class="ptitle cf">Prompt details</div>
+      <div class="field"><div class="fl">Content type</div>
+        <select class="sel" id="vp-type">
+          <option>UGC product showcase</option><option>POV lifestyle moment</option><option>AI Influencer cinematic</option><option>Black Film cinematic</option><option>Reality show scene</option><option>Music video sequence</option><option>Brand commercial</option><option>TikTok viral format</option><option>Emotional storytelling</option><option>Concert / performance</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Subject / scene</div><textarea class="inp" id="vp-subject" placeholder="What's in the video? Who is in it? What happens?"></textarea></div>
+      <div class="field"><div class="fl">Character / model</div><input class="inp" id="vp-character" placeholder="e.g. Black woman, natural locs, luxury fashion, confident energy"/></div>
+      <div class="field"><div class="fl">Setting & lighting</div><input class="inp" id="vp-setting" placeholder="e.g. NYC rooftop, golden hour, warm cinematic light"/></div>
+      <div class="field"><div class="fl">Platform</div>
+        <select class="sel" id="vp-platform"><option>TikTok (vertical 9:16)</option><option>Instagram Reels</option><option>YouTube (16:9)</option><option>All platforms</option></select>
+      </div>
+      <button class="btn cf mt8" onclick="genVideoPrompt()">Generate cinematic prompt ↗</button>
+      <div class="lbar mt8" id="vp-lbar"><div class="lbar-fill cf"></div></div>
+      <div class="ai-out" id="vp-out"><div class="ai-lbl cf">Cinematic Prompt</div><div class="ai-text" id="vp-txt"></div><button class="btn sm mt8" onclick="cp('vp-txt')">Copy ↗</button></div>
+    </div>
+    <div>
+      <div class="panel cf mb12">
+        <div class="ptitle cf">Quick-starts</div>
+        <button class="qs" onclick="quickVideo('AI Influencer cinematic','A luxury AI influencer walking through a high-end fashion district','Black woman, deep brown skin, natural locs, wearing designer streetwear, sunglasses, powerful walk','Paris fashion week street, midday golden light')">AI influencer walk ↗</button>
+        <button class="qs" onclick="quickVideo('Black Film cinematic','Two characters face off in a dramatic confrontation on a rooftop at night','Black woman and Black man, designer clothes, intense energy','NYC rooftop, night, city lights, dramatic shadows')">Cinematic confrontation ↗</button>
+        <button class="qs" onclick="quickVideo('Music video sequence','Solo female artist performing on a massive concert stage with elaborate lighting show','Black woman, pop star energy, sequin outfit, commanding presence','Concert arena, dramatic stage lighting, fog effects')">Music video concert ↗</button>
+        <button class="qs" onclick="quickVideo('UGC product showcase','Creator unboxing and showing off a luxury swimwear set, trying it on','Black woman, casual but stylish, natural and relatable energy','Bright beach house bedroom, natural window light')">UGC product unbox ↗</button>
+        <button class="qs" onclick="quickVideo('TikTok viral format','POV: you just got your first POD sale notification','Black woman, home office setup, reacting to phone notification with pure joy','Home office, ring light, warm cozy vibes')">Viral POV reaction ↗</button>
+      </div>
+      <div class="panel cf">
+        <div class="ptitle cf">Paste your prompt into</div>
+        <div class="fc">
+          <a href="https://kling.ai" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:flex;justify-content:space-between;align-items:center">Kling AI <span style="color:var(--cf);font-family:'DM Mono',monospace;font-size:10px">Free tier ↗</span></a>
+          <a href="https://runwayml.com" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:flex;justify-content:space-between;align-items:center">Runway Gen-3 <span style="color:var(--cf);font-family:'DM Mono',monospace;font-size:10px">Free credits ↗</span></a>
+          <a href="https://pika.art" target="_blank" style="padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b);border-radius:var(--r);font-size:12px;color:var(--w2);text-decoration:none;display:flex;justify-content:space-between;align-items:center">Pika <span style="color:var(--cf);font-family:'DM Mono',monospace;font-size:10px">Free tier ↗</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-cf-calendar">
+  <div class="pg-title" style="color:var(--cf)">Content <span style="color:var(--w)">Calendar</span></div>
+  <div class="pg-sub">Build a full 7 or 30-day content plan — every day has a video idea, hook, caption, and video prompt ready to go.</div>
+  <div class="g2">
+    <div class="panel cf">
+      <div class="ptitle cf">Calendar setup</div>
+      <div class="field"><div class="fl">Your niche</div>
+        <select class="sel" id="cal-niche">
+          <option>POD fashion business</option><option>AI influencer creator</option><option>Luxury lifestyle</option><option>Black women entrepreneurship</option><option>Digital products & courses</option><option>Behind the scenes creator life</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Primary platform</div>
+        <select class="sel" id="cal-platform"><option>TikTok</option><option>Instagram Reels</option><option>TikTok + Instagram</option><option>YouTube Shorts</option></select>
+      </div>
+      <div class="field"><div class="fl">Calendar length</div>
+        <select class="sel" id="cal-days"><option>7 days</option><option>14 days</option><option>30 days</option></select>
+      </div>
+      <div class="field"><div class="fl">Goal this period</div>
+        <select class="sel" id="cal-goal"><option>Grow followers & reach</option><option>Drive sales & conversions</option><option>Build brand awareness</option><option>Launch a new product</option></select>
+      </div>
+      <button class="btn cf mt8" onclick="genCalendar()">Build content calendar ↗</button>
+      <div class="lbar mt8" id="cal-lbar"><div class="lbar-fill cf"></div></div>
+      <div class="ai-out" id="cal-out"><div class="ai-lbl cf">Content Calendar</div><div class="ai-text" id="cal-txt"></div><button class="btn sm mt8" onclick="cp('cal-txt')">Copy calendar ↗</button></div>
+    </div>
+    <div>
+      <div class="panel cf mb12">
+        <div class="ptitle cf">Hook Generator</div>
+        <div class="field"><div class="fl">Niche</div>
+          <select class="sel" id="hk-niche">
+            <option>POD business</option><option>AI influencer</option><option>Income & side hustle</option><option>Luxury lifestyle</option><option>Black women entrepreneurship</option>
+          </select>
+        </div>
+        <div class="field"><div class="fl">Hook style</div>
+          <select class="sel" id="hk-style">
+            <option>Income reveal</option><option>Pattern interrupt</option><option>POV opener</option><option>Curiosity gap</option><option>Hot take</option>
+          </select>
+        </div>
+        <button class="btn cf" onclick="genHooks()">Generate 10 hooks ↗</button>
+        <div class="lbar mt8" id="hk-lbar"><div class="lbar-fill cf"></div></div>
+        <div class="ai-out" id="hk-out"><div class="ai-lbl cf">10 Hooks</div><div class="ai-text" id="hk-txt"></div><button class="btn sm mt8" onclick="cp('hk-txt')">Copy ↗</button></div>
+      </div>
+      <div class="panel cf">
+        <div class="ptitle cf">Caption Writer</div>
+        <div class="field"><div class="fl">What the video is about</div><textarea class="inp" id="cap-topic" placeholder="e.g. How I made $10k with POD using AI tools, no inventory needed..." style="min-height:60px"></textarea></div>
+        <div class="field"><div class="fl">Platform</div>
+          <select class="sel" id="cap-platform"><option>TikTok</option><option>Instagram Reels</option><option>All platforms</option></select>
+        </div>
+        <button class="btn cf" onclick="genCaption()">Write caption ↗</button>
+        <div class="lbar mt8" id="cap-lbar"><div class="lbar-fill cf"></div></div>
+        <div class="ai-out" id="cap-out"><div class="ai-lbl cf">Caption</div><div class="ai-text" id="cap-txt"></div><button class="btn sm mt8" onclick="cp('cap-txt')">Copy ↗</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="pg-cf-bot">
+  <div class="pg-title" style="color:var(--cf)">AI Help <span style="color:var(--w)">Bot</span></div>
+  <div class="pg-sub">Your 24/7 content strategy assistant. Ask anything about what to post, how to grow, or what content to make today.</div>
+  <div class="g2">
+    <div class="panel cf" style="display:flex;flex-direction:column">
+      <div class="ptitle cf">Chat</div>
+      <div class="chat-wrap" id="bot-msgs">
+        <div class="msg bot">Hey! I'm your CineFlow AI content assistant. What do you need help with today? Ask me anything about content, video ideas, hooks, or what to post.</div>
+      </div>
+      <div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn sm" onclick="botChat('What should I post today on TikTok for my POD business?')">What to post today</button>
+        <button class="btn sm" onclick="botChat('Give me 5 viral TikTok hooks for a POD fashion brand')">5 viral hooks</button>
+        <button class="btn sm" onclick="botChat('Write me a 30-second TikTok script about how I built my POD business with AI')">Write a script</button>
+        <button class="btn sm" onclick="botChat('How do I make my AI-generated videos look more cinematic?')">Better videos</button>
+      </div>
+      <div class="chat-input-row">
+        <input class="inp" id="bot-input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendBotChat()"/>
+        <button class="btn cf" style="width:auto;padding:9px 16px" onclick="sendBotChat()">Send ↗</button>
+      </div>
+    </div>
+    <div class="panel cf">
+      <div class="ptitle cf">Content ideas right now</div>
+      <div class="fc">
+        <button class="qs" onclick="botChat('Give me 3 specific TikTok video ideas for promoting a luxury POD swimwear collection launching next week')">Swimwear launch content ↗</button>
+        <button class="qs" onclick="botChat('Write a TikTok script for a behind-the-scenes video showing how I create AI characters for my reality show')">Behind the scenes video ↗</button>
+        <button class="qs" onclick="botChat('What type of content performs best for Black women entrepreneurs on TikTok right now in 2026?')">What performs best now ↗</button>
+        <button class="qs" onclick="botChat('How do I repurpose one piece of content across TikTok, Instagram, and YouTube at the same time?')">Repurpose content ↗</button>
+        <button class="qs" onclick="botChat('Give me a 5-video series idea for my AI influencer brand that could go viral on TikTok')">Viral series idea ↗</button>
+        <button class="qs" onclick="botChat('Write a hook for a video about making money online as a Black woman creator using AI tools')">Money content hook ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     BRAND DEALS
+═══════════════════════════════════════════════ -->
+<div class="pg" id="pg-deals-pitch">
+  <div class="pg-title" style="color:var(--gold)">Brand Pitch <span style="color:var(--w)">Generator</span></div>
+  <div class="pg-sub">Write a professional pitch email to any brand in 60 seconds. Confident, not desperate — you are an equal business partner.</div>
+  <div class="g2">
+    <div class="panel gold">
+      <div class="ptitle gold">Pitch details</div>
+      <div class="field"><div class="fl">Brand name</div><input class="inp" id="bp-brand" placeholder="e.g. FashionNova, Target, Shein, Nike"/></div>
+      <div class="field"><div class="fl">Deal type</div>
+        <select class="sel" id="bp-type">
+          <option>Sponsored content (paid posts)</option><option>Brand ambassador</option><option>Collection collaboration</option><option>UGC content package</option><option>Affiliate partnership</option>
+        </select>
+      </div>
+      <div class="field"><div class="fl">Your audience & platforms</div><input class="inp" id="bp-audience" placeholder="e.g. TikTok 85k, Instagram 42k, avg 8% engagement"/></div>
+      <div class="field"><div class="fl">Your rate ask</div><input class="inp" id="bp-rate" placeholder="e.g. $2,500 per post, $5k for 3-post campaign"/></div>
+      <div class="field"><div class="fl">Why this brand fits your audience</div><input class="inp" id="bp-fit" placeholder="e.g. My audience is 80% Black women 25-40 who love fashion"/></div>
+      <div class="field"><div class="fl">Tone</div>
+        <select class="sel" id="bp-tone">
+          <option>Confident & professional</option><option>Warm & personal</option><option>Bold & direct</option>
+        </select>
+      </div>
+      <button class="btn gold mt8" onclick="genPitch()">Generate pitch email ↗</button>
+      <div class="lbar mt8" id="bp-lbar"><div class="lbar-fill gold"></div></div>
+      <div class="ai-out" id="bp-out"><div class="ai-lbl gold">Brand Pitch Email</div><div class="ai-text" id="bp-txt"></div><button class="btn sm mt8" onclick="cp('bp-txt')">Copy email ↗</button></div>
+    </div>
+    <div>
+      <div class="panel gold mb12">
+        <div class="ptitle gold">Quick-starts</div>
+        <button class="qs" onclick="quickPitch('FashionNova','Sponsored content (paid posts)','TikTok 85k, Instagram 42k, 8% engagement','$3,500 for 4-post monthly campaign','My audience is 80% Black women 25-40 who love fast fashion trends','Confident & professional')">FashionNova pitch ↗</button>
+        <button class="qs" onclick="quickPitch('Printify','Brand ambassador','TikTok 85k, POD creator audience','$2,000/mo + affiliate commission','My entire audience are POD sellers — they are your perfect customer','Warm & personal')">Printify ambassador ↗</button>
+        <button class="qs" onclick="quickPitch('Shein','Collection collaboration','TikTok 85k, Instagram 42k','$5,800 flat for campaign','My aesthetic and audience aligns perfectly with Shein\'s target demographic','Bold & direct')">Shein collab ↗</button>
+      </div>
+      <div class="panel gold">
+        <div class="ptitle gold">Rate Card Builder</div>
+        <div class="field"><div class="fl">Your platforms & followers</div><input class="inp" id="rc-platforms" placeholder="e.g. TikTok 85k, Instagram 42k, YouTube 12k"/></div>
+        <div class="field"><div class="fl">Your niche</div><input class="inp" id="rc-niche" placeholder="e.g. POD fashion, AI influencer, luxury lifestyle"/></div>
+        <button class="btn gold mt8" onclick="genRateCard()">Build my rate card ↗</button>
+        <div class="lbar mt8" id="rc-lbar"><div class="lbar-fill gold"></div></div>
+        <div class="ai-out" id="rc-out"><div class="ai-lbl gold">Rate Card</div><div class="ai-text" id="rc-txt"></div><button class="btn sm mt8" onclick="cp('rc-txt')">Copy ↗</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div><!-- end shell -->
+
+<script>
+// ===========================================================
+//  🔑 ADD YOUR OPENAI KEY HERE
+//  Get it at: platform.openai.com → API Keys → Create new key
+//  It starts with sk-proj-...
+//  Paste it between the quotes below:
+// ============================================================
+const API_KEY = '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'
+
+const API = 'https://api.openai.com/v1/chat/completions'
+const MDL = 'gpt-4o-mini'
+
+// ── Core AI function ─────────────────────────────────────────
+async function ai(prompt, txtId, lbarId, outId, color='pod') {
+  const txt=document.getElementById(txtId)
+  const lb=document.getElementById(lbarId)
+  const out=document.getElementById(outId)
+  lb.classList.add('go')
+  txt.textContent='Generating…'
+  out.style.display='block'
+  out.classList.add('show')
+  if (!API_KEY) {
+    txt.textContent='🔑 No API key found.\n\nOpen this file in Notepad, find:\nconst API_KEY = \'\'\n\nPaste your OpenAI key between the quotes.\nGet it at: platform.openai.com → API Keys'
+    lb.classList.remove('go')
+    return
+  }
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + API_KEY
+      }, 'OpenAI-Organization': ''
+
+      body: JSON.stringify({
+        model: MDL,
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    })
+    const d = await res.json()
+    if (d.error) {
+      txt.textContent = 'API Error: ' + d.error.message
+    } else {
+      txt.textContent = d.choices?.[0]?.message?.content ?? 'Generation failed — try again.'
+    }
+  } catch(e) {
+    txt.textContent = 'Connection error: ' + e.message
+  }
+  lb.classList.remove('go')
+}
+
+function g(id) { return document.getElementById(id)?.value || '' }
+function cp(id) {
+  const el = document.getElementById(id)
+  if (el && navigator.clipboard) navigator.clipboard.writeText(el.textContent)
+    .then(() => { const o=el.style.color; el.style.color='var(--gold)'; setTimeout(()=>el.style.color=o,700) })
+}
+
+// ── POD STUDIO ───────────────────────────────────────────────
+function genMockup() {
+  ai(`You are a professional AI image prompt engineer for POD fashion mockups.
+Product: ${g('m-product')} | Design: ${g('m-design')||'luxury minimal design'}
+Model/setting: ${g('m-setting')} | Style: ${g('m-style')}
+
+Write:
+MOCKUP PROMPT (Midjourney/DALL-E — under 120 words): Include garment, design, model appearance, setting, lighting, camera, mood, quality keywords.
+VIDEO PROMPT (Kling AI/Runway — under 80 words): 6-10 second product reveal with movement and atmosphere.
+STYLE NOTES: 3 bullet points to make this mockup stand out.`,
+  'm-txt','m-lbar','m-out','pod')
+}
+function quickMockup(p,d,s,st) {
+  document.getElementById('m-product').value=p
+  document.getElementById('m-design').value=d
+  document.getElementById('m-setting').value=s
+  document.getElementById('m-style').value=st
+  genMockup()
+}
+function genListing() {
+  ai(`You are a top POD ecommerce copywriter.
+Product: ${g('l-name')||'POD fashion item'} | Details: ${g('l-details')||'premium stylish item'}
+Platform: ${g('l-platform')} | Audience: ${g('l-audience')}
+
+Write:
+TITLE: SEO-optimised for ${g('l-platform')}. Under 140 chars.
+DESCRIPTION: Lifestyle-led, 4-5 sentences, sells the feeling.
+KEY FEATURES: 5 benefit-first bullet points under 15 words each.
+SEO TAGS: 13 comma-separated tags under 20 chars each.
+TIKTOK CAPTION: Hook + product + CTA under 150 chars.`,
+  'l-txt','l-lbar','l-out','pod')
+}
+function genDescription() {
+  ai(`You are a POD description specialist.
+Product: ${g('d-product')||'POD fashion item'} | Niche: ${g('d-niche')} | Tone: ${g('d-tone')} | Audience: ${g('d-audience')}
+
+Write:
+SHORT (TikTok - 2 sentences): Fast and punchy.
+MEDIUM (Etsy - 4-5 sentences): Lifestyle-led, paint a picture.
+LONG (Shopify - 2 paragraphs): Full brand story, quality and feeling.
+POWER LINE: One sentence tagline for this product.`,
+  'd-txt','d-lbar','d-out','pod')
+}
+
+// ── AI STUDIOS ────────────────────────────────────────────────
+function genScript() {
+  ai(`Write a ${g('ss-type')} script.
+Title/show: ${g('ss-title')||'Untitled'} | Cast: ${g('ss-cast')||'main characters'}
+Story: ${g('ss-story')||'drama unfolds'} | Tone: ${g('ss-tone')}
+
+Include:
+- Cold open / hook that grabs attention immediately
+- Key scenes with dialogue and action beats
+- Dramatic or emotional moments
+- Strong ending or cliffhanger
+- Video prompts for 2 key scenes (ready for Kling AI)
+Format like a real script. Under 500 words. Make it gripping.`,
+  'ss-txt','ss-lbar','ss-out','stu')
+}
+function quickScript(type,title,cast,story,tone) {
+  document.getElementById('ss-type').value=type
+  document.getElementById('ss-title').value=title
+  document.getElementById('ss-cast').value=cast
+  document.getElementById('ss-story').value=story
+  document.getElementById('ss-tone').value=tone
+  genScript()
+}
+function genCharacter() {
+  ai(`Build a complete AI character profile.
+Name: ${g('sc-name')||'AI Character'} | Age/vibe: ${g('sc-age')} | Appearance: ${g('sc-look')}
+Style: ${g('sc-style')} | Personality: ${g('sc-personality')} | Backstory: ${g('sc-backstory')}
+
+Write:
+CHARACTER OVERVIEW: Who they are in 3 compelling sentences.
+APPEARANCE PROMPT (Midjourney/DALL-E ready): Full description for consistent image generation.
+VIDEO SEED (Kling AI ready): How to generate consistent video of this character.
+VOICE NOTES: Speech patterns and energy for ElevenLabs or voice tools.
+SIGNATURE PHRASES: 3 things they always say.
+CONSISTENCY RULE: One short phrase to add to every prompt to keep them consistent.`,
+  'sc-txt','sc-lbar','sc-out','stu')
+}
+
+// ── CINEFLOW ──────────────────────────────────────────────────
+function genVideoPrompt() {
+  ai(`You are an expert cinematic video prompt engineer for AI video generation tools.
+Type: ${g('vp-type')} | Subject: ${g('vp-subject')||'cinematic scene'}
+Character: ${g('vp-character')||'Black woman, confident, stylish'}
+Setting/lighting: ${g('vp-setting')||'dramatic cinematic setting'}
+Platform: ${g('vp-platform')}
+
+Write:
+
+MAIN VIDEO PROMPT (Kling AI / Runway ready):
+Complete copy-paste prompt. Include: character appearance, wardrobe, action/movement, setting, lighting, camera movement (slow push-in, orbit, handheld etc), mood, atmosphere, duration (6-10 seconds), visual style.
+
+VARIATION PROMPT:
+Same scene, different angle or camera movement.
+
+DIRECTOR NOTES:
+3 tips to get the best result from this prompt.`,
+  'vp-txt','vp-lbar','vp-out','cf')
+}
+function quickVideo(type,subject,character,setting) {
+  document.getElementById('vp-type').value=type
+  document.getElementById('vp-subject').value=subject
+  document.getElementById('vp-character').value=character
+  document.getElementById('vp-setting').value=setting
+  genVideoPrompt()
+}
+function genCalendar() {
+  ai(`Build a ${g('cal-days')} content calendar.
+Niche: ${g('cal-niche')} | Platform: ${g('cal-platform')} | Goal: ${g('cal-goal')}
+
+For each day write:
+DAY [X]: [Video title/concept]
+HOOK: [Opening line - first 2 seconds]
+CAPTION: [2-3 line ready-to-post caption]
+CTA: [The action you want viewers to take]
+VIDEO PROMPT: [One-sentence Kling AI/Runway prompt]
+HASHTAGS: [5 relevant tags]
+POST TIME: [Best time to post]
+
+Mix content types: education, entertainment, promotion, behind-the-scenes, and lifestyle.
+Every day specific and immediately actionable. Under 600 words.`,
+  'cal-txt','cal-lbar','cal-out','cf')
+}
+function genHooks() {
+  ai(`Generate 10 scroll-stopping hooks for ${g('hk-niche')} content.
+Style: ${g('hk-style')}
+
+For each hook:
+HOOK [N]: [The exact hook - 1-2 sentences max]
+WHY IT WORKS: [One sentence on the psychology]
+
+Mix POV hooks, income reveals, curiosity gaps, hot takes, and pattern interrupts.
+Every hook specific to ${g('hk-niche')}. Under 350 words.`,
+  'hk-txt','hk-lbar','hk-out','cf')
+}
+function genCaption() {
+  ai(`Write a ${g('cap-platform')} caption.
+Video topic: ${g('cap-topic')||'creator business content'}
+Brand voice: Envi Lee - luxury, confident, empowering, Black creator aesthetic.
+
+Write:
+HOOK: First line that stops the scroll (under 15 words)
+BODY: 2-3 lines of content
+CTA: The specific action
+HASHTAGS: 8-10 relevant hashtags
+
+Under 200 words. Make the hook irresistible.`,
+  'cap-txt','cap-lbar','cap-out','cf')
+}
+
+// ── AI HELP BOT ───────────────────────────────────────────────
+async function sendBotChat() {
+  const input = document.getElementById('bot-input')
+  const msg = input.value.trim()
+  if (!msg) return
+  input.value = ''
+  const msgs = document.getElementById('bot-msgs')
+  const u = document.createElement('div')
+  u.className = 'msg user'
+  u.textContent = msg
+  msgs.appendChild(u)
+  const b = document.createElement('div')
+  b.className = 'msg bot'
+  b.innerHTML = '<span style="color:var(--cf)">thinking…</span>'
+  msgs.appendChild(b)
+  msgs.scrollTop = msgs.scrollHeight
+  if (!API_KEY) {
+    b.textContent = 'Add your OpenAI API key to the file to use the AI bot.'
+    return
+  }
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + API_KEY,
+      }, 'OpenAI-Organization': ''
+      body: JSON.stringify({
+        model: MDL,
+        max_tokens: 500,
+        messages: [{
+          role: 'user',
+          content: `You are CineFlow AI - a content strategy assistant for Envi Lee, a Black woman creator who runs a POD business, AI influencer brand, and creator suite. Be specific, direct, and helpful. Under 200 words.\n\nQuestion: ${msg}`
+        }]
+      })
+    })
+    const d = await res.json()
+    if (d.error) {
+      b.textContent = 'Error: ' + d.error.message
+    } else {
+      b.textContent = d.choices?.[0]?.message?.content ?? 'Try again.'
+    }
+  } catch(e) {
+    b.textContent = 'Connection error: ' + e.message
+  }
+  msgs.scrollTop = msgs.scrollHeight
+}
+function botChat(msg) {
+  document.getElementById('bot-input').value = msg
+  sendBotChat()
+}
+
+// ── BRAND DEALS ───────────────────────────────────────────────
+function genPitch() {
+  ai(`Write a brand pitch email for Envi Lee - a POD brand owner and AI influencer creator.
+Brand: ${g('bp-brand')||'the brand'} | Deal: ${g('bp-type')}
+Audience: ${g('bp-audience')||'TikTok 85k, Instagram 42k'}
+Rate: ${g('bp-rate')||'open to discuss'} | Why we fit: ${g('bp-fit')}
+Tone: ${g('bp-tone')}
+
+Write:
+SUBJECT LINE: Compelling and specific - not generic.
+EMAIL: Personal opening referencing the brand, who Envi Lee is (2 sentences), why this brand plus her audience is a perfect match, deliverables and rate, clear CTA. Equal partners. Professional. Under 200 words.`,
+  'bp-txt','bp-lbar','bp-out','gold')
+}
+function quickPitch(brand,type,audience,rate,fit,tone) {
+  document.getElementById('bp-brand').value=brand
+  document.getElementById('bp-type').value=type
+  document.getElementById('bp-audience').value=audience
+  document.getElementById('bp-rate').value=rate
+  document.getElementById('bp-fit').value=fit
+  document.getElementById('bp-tone').value=tone
+  genPitch()
+}
+function genRateCard() {
+  ai(`Build a complete rate card for a creator named Envi Lee.
+Platforms and following: ${g('rc-platforms')||'TikTok 85k, Instagram 42k'}
+Niche: ${g('rc-niche')||'POD fashion and AI influencer creator'}
+
+Write a professional rate card with:
+TIKTOK RATES: Single video, 2-video pack, monthly retainer
+INSTAGRAM RATES: Single Reel, Stories pack, monthly retainer
+UGC RATES: Single video, 5-video pack, monthly retainer
+PACKAGES: Starter, Standard, and Premium bundles with prices
+ADD-ONS: Usage rights, exclusivity, rush fee pricing
+PAYMENT TERMS: Standard terms
+Make rates strong - she should not undercharge. Under 300 words.`,
+  'rc-txt','rc-lbar','rc-out','gold')
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+const SIDEBARS = {
+  home: ``,
+  pod: `
+    <div class="slabel">POD Studio</div>
+    <button class="si pod on" onclick="showPage('pod-mockup');setSideActive(this)"><span style="color:var(--pod)">◈</span> Mockup Generator</button>
+    <button class="si pod" onclick="showPage('pod-listing');setSideActive(this)"><span style="color:var(--pod)">⊹</span> Product Listing + Description</button>
+  `,
+  stu: `
+    <div class="slabel">AI Studios</div>
+    <button class="si stu on" onclick="showPage('stu-script');setSideActive(this)"><span style="color:var(--mu3)">⊳</span> Script Writer</button>
+    <button class="si stu" onclick="showPage('stu-character');setSideActive(this)"><span style="color:var(--mu3)">◉</span> Character Builder</button>
+  `,
+  cf: `
+    <div class="slabel">CineFlow AI</div>
+    <button class="si cf on" onclick="showPage('cf-prompt');setSideActive(this)"><span style="color:var(--cf)">◈</span> Cinematic Prompt Builder</button>
+    <button class="si cf" onclick="showPage('cf-calendar');setSideActive(this)"><span style="color:var(--cf)">◷</span> Content Calendar + Hooks</button>
+    <button class="si cf" onclick="showPage('cf-bot');setSideActive(this)"><span style="color:var(--cf)">◎</span> AI Help Bot</button>
+  `,
+  deals: `
+    <div class="slabel">Brand Deals</div>
+    <button class="si gold on" onclick="showPage('deals-pitch');setSideActive(this)"><span style="color:var(--gold)">◉</span> Pitch Email + Rate Card</button>
+  `,
+}
+
+const APP_FIRST_PAGE = { home:'home', pod:'pod-mockup', stu:'stu-script', cf:'cf-prompt', deals:'deals-pitch' }
+
+function switchApp(app, tabEl) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'))
+  if (tabEl) {
+    tabEl.classList.add('on')
+  } else {
+    const tabs = document.querySelectorAll('.tab')
+    const appOrder = ['home','pod','stu','cf','deals']
+    const idx = appOrder.indexOf(app)
+    if (idx >= 0) tabs[idx].classList.add('on')
+  }
+  document.getElementById('sidebar').innerHTML = SIDEBARS[app] || ''
+  showPage(APP_FIRST_PAGE[app] || 'home')
+}
+
+function showPage(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'))
+  const pg = document.getElementById('pg-' + id)
+  if (pg) pg.classList.add('on')
+}
+
+function setSideActive(el) {
+  el.closest('aside').querySelectorAll('.si').forEach(s => s.classList.remove('on'))
+  el.classList.add('on')
+}
+
+document.getElementById('sidebar').innerHTML = SIDEBARS.home
+</script>
+</body>
+</html>
